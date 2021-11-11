@@ -1,11 +1,6 @@
-
 module PolicyOcr
-  file = File.open("../spec/fixtures/sample.txt")
-  file_data = file.read
 
-  lines = File.foreach("../spec/fixtures/sample.txt").first(3)
-
-  numberHash = {
+  number_hash = {
     " _ | ||_|" => 0,
   
     "     |  |" => 1,
@@ -27,22 +22,34 @@ module PolicyOcr
     " _ |_| _|" => 9
   }
 
-  counter = 0
-  counteragain = 2
+  all_policy_numbers = []
 
-  until counteragain > 27
-    full_digit = ""
-    lines.each{|l| 
+  File.foreach("../spec/fixtures/sample.txt").each_slice(4) do |four_lines|
 
-      part_of_digit = l[counter..counteragain]
-
-      full_digit = full_digit + part_of_digit
-    }
-    counter+=3
-    counteragain+=3
-
-    puts numberHash[full_digit]
+    lines = four_lines.first(3)
+    length_of_line = lines[0].length
     
-  end
+    starting_char = 0
+    ending_char = 2
+    
+    digits_in_four_lines = []
+    
+    until ending_char > length_of_line
+      full_digit = ""
+      lines.each{|l| 
+        part_of_digit = l[starting_char..ending_char]
 
+        full_digit = full_digit + part_of_digit
+      }
+      starting_char += 3
+      ending_char += 3
+      digits_in_four_lines.push(number_hash[full_digit])
+    end
+
+    all_policy_numbers.push(digits_in_four_lines)
+
+  end
+  print all_policy_numbers
 end
+
+
