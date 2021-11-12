@@ -49,7 +49,11 @@ module PolicyOcr
     all_policy_numbers.push(digits_in_four_lines)
 
   end
-  print all_policy_numbers
+
+  def self.numbers_to_file(all_policy_numbers)
+    File.write('policy_numbers.txt', all_policy_numbers.map(&:join).map{ |num| num + "\n"}.join)
+  end
+
+  numbers_to_file(all_policy_numbers)
+
 end
-
-
