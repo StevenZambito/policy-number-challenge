@@ -1,6 +1,6 @@
 module PolicyOcr
 
-  number_hash = {
+  NUMBER_HASH = {
     " _ | ||_|" => 0,
   
     "     |  |" => 1,
@@ -22,38 +22,43 @@ module PolicyOcr
     " _ |_| _|" => 9
   }
 
-  all_policy_numbers = []
+  def self.create_policy_number(policy_file)
+    all_policy_numbers = []
 
-  File.foreach("../spec/fixtures/sample.txt").each_slice(4) do |four_lines|
+    File.foreach(policy_file).each_slice(4) do |four_lines|
 
-    lines = four_lines.first(3)
-    length_of_line = lines[0].length
-    
-    starting_char = 0
-    ending_char = 2
-    
-    digits_in_four_lines = []
-    
-    until ending_char > length_of_line
-      full_digit = ""
-      lines.each{|l| 
-        part_of_digit = l[starting_char..ending_char]
+      lines = four_lines.first(3)
+      length_of_line = lines[0].length
+      
+      starting_char = 0
+      ending_char = 2
+      
+      digits_in_four_lines = []
+      
+      until ending_char > length_of_line
+        full_digit = ""
+        lines.each{|l| 
+          part_of_digit = l[starting_char..ending_char]
 
-        full_digit = full_digit + part_of_digit
-      }
-      starting_char += 3
-      ending_char += 3
-      digits_in_four_lines.push(number_hash[full_digit])
+          full_digit = full_digit + part_of_digit
+        }
+        starting_char += 3
+        ending_char += 3
+        digits_in_four_lines.push(NUMBER_HASH[full_digit])
+      end
+
+      all_policy_numbers.push(digits_in_four_lines)
+
     end
-
-    all_policy_numbers.push(digits_in_four_lines)
-
+    all_policy_numbers.map(&:join).map(&:to_i)
   end
 
-  def self.numbers_to_file(all_policy_numbers)
-    File.write('policy_numbers.txt', all_policy_numbers.map(&:join).map{ |num| num + "\n"}.join)
-  end
 
-  numbers_to_file(all_policy_numbers)
+
+  # def self.numbers_to_file(all_policy_numbers)
+  #   File.write('policy_numbers.txt', all_policy_numbers.map(&:join).map{ |num| num + "\n"}.join)
+  # end
+
+  # numbers_to_file(all_policy_numbers)
 
 end

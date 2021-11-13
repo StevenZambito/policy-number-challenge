@@ -7,4 +7,5 @@
 3. Access each set of 3 characters in the current four lines (4th is always blank) and do the code to convert into a number, until the end (27th character)
 4. Access next four lines(5-8)
 
-  
+
+
