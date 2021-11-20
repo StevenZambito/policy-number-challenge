@@ -32,16 +32,15 @@ module PolicyOcr
 
       # Grabs the first 3 lines in the current slice (discarding empty 4th line)
       lines = four_lines.first(3)
-      # Gets length of line to know how many characters total are in each number
       
       chars = map_characters(lines)
-      digits_in_three_lines = chars.map { |c| (NUMBER_HASH[c]) }
+      digits_in_three_lines = chars.map { |c| (NUMBER_HASH[c] || "?") }
       
       # Adds the digits_in_three_lines array to all_policy_numbers
       all_policy_numbers.push(digits_in_three_lines)
 
     end
-    all_policy_numbers.map(&:join).map(&:to_i)
+    all_policy_numbers.map(&:join)
   end
 
   def self.map_characters(lines)
@@ -66,16 +65,25 @@ module PolicyOcr
   end
 
   def self.calc_checksum(num)
+    if num.include? "?"
+      return "#{num} ILL" + "\n"
+    end
+
     total = 0
-    num.to_s.reverse.split("").each_with_index{|num, index| total+=(index + 1) * num.to_i}
+    num.reverse.split("").each_with_index{|num, index| total+=(index + 1) * num.to_i}
     remainder = total % 11
 
     if remainder == 0
-      "#{num} is valid"
+      "#{num}" + "\n"
     else
-      "#{num} is invalid"
+      "#{num} ERR" + "\n"
     end
   end
 
-  # calc_checksum(012345678)
+  def self.policies_to_file(policy_file, converted_policy_file)
+    all_policy_nums = create_policy_number(policy_file)
+    File.write(converted_policy_file, all_policy_nums.map{|num| calc_checksum(num)}.join)
+  end
+
+  policies_to_file('spec/fixtures/sample.txt', 'policy_numbers.txt')
 end
