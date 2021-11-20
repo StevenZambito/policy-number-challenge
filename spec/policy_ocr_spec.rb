@@ -55,4 +55,11 @@ describe PolicyOcr do
       expect(PolicyOcr.map_characters([' _  _  _ ', '| | _||_ ', '|_| _| _|'])).to eq(mapped_characters)
     end
   end
+
+  describe '#calc_checksum' do
+    it "returns valid or invalid for a given policy number" do
+      expect(PolicyOcr.calc_checksum(12345)).to eq("12345 is invalid")
+      expect(PolicyOcr.calc_checksum(123456789)).to eq("123456789 is valid")
+    end
+  end
 end

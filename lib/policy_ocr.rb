@@ -64,4 +64,18 @@ module PolicyOcr
     end
     digits_in_three_lines
   end
+
+  def self.calc_checksum(num)
+    total = 0
+    num.to_s.reverse.split("").each_with_index{|num, index| total+=(index + 1) * num.to_i}
+    remainder = total % 11
+
+    if remainder == 0
+      "#{num} is valid"
+    else
+      "#{num} is invalid"
+    end
+  end
+
+  # calc_checksum(012345678)
 end
