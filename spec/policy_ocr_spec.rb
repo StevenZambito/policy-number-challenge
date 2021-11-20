@@ -38,6 +38,21 @@ describe PolicyOcr do
         expect(result[1].to_s.length).to eq(11)
         expect(result[2].to_s.length).to eq(12)
       end
+      it "creates policy numbers from sample file" do
+        expected_policy_numbers = 
+        [
+          123456, 12345678923, 123456789237     
+        ]
+          expect(PolicyOcr.create_policy_number('spec/fixtures/varied_length_sample.txt')).to eq(expected_policy_numbers)
+      end
+    end
+  end
+
+  describe '#map_characters' do
+    let(:mapped_characters) { [" _ | ||_|", " _  _| _|", " _ |_  _|"] }
+
+    it "takes 3 lines and maps to array of 1st 3 characters of each line" do
+      expect(PolicyOcr.map_characters([' _  _  _ ', '| | _||_ ', '|_| _| _|'])).to eq(mapped_characters)
     end
   end
 end
